@@ -55,17 +55,20 @@ public class BaseImageDownloader implements ImageDownloader {
 	protected final Context context;
 	protected final int connectTimeout;
 	protected final int readTimeout;
+	protected final CustomStreamSource customStreamSource;
 
-	public BaseImageDownloader(Context context) {
+	public BaseImageDownloader(Context context, CustomStreamSource source) {
 		this.context = context.getApplicationContext();
 		this.connectTimeout = DEFAULT_HTTP_CONNECT_TIMEOUT;
 		this.readTimeout = DEFAULT_HTTP_READ_TIMEOUT;
+		this.customStreamSource = source;
 	}
 
 	public BaseImageDownloader(Context context, int connectTimeout, int readTimeout) {
 		this.context = context.getApplicationContext();
 		this.connectTimeout = connectTimeout;
 		this.readTimeout = readTimeout;
+		this.customStreamSource = null;
 	}
 
 	@Override
@@ -204,6 +207,11 @@ public class BaseImageDownloader implements ImageDownloader {
 	 * @throws UnsupportedOperationException if image URI has unsupported scheme(protocol)
 	 */
 	protected InputStream getStreamFromOtherSource(String imageUri, Object extra) throws IOException {
-		throw new UnsupportedOperationException(String.format(ERROR_UNSUPPORTED_SCHEME, imageUri));
+		if (customStreamSource != null) {
+			return customStreamSource.openInputStream();
+		}
+		else {
+			throw new UnsupportedOperationException(String.format(ERROR_UNSUPPORTED_SCHEME, imageUri));
+		}
 	}
 }

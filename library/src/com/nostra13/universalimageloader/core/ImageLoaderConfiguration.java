@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.FuzzyKeyMemoryCache;
 import com.nostra13.universalimageloader.core.assist.MemoryCacheUtil;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.decode.ImageDecoder;
+import com.nostra13.universalimageloader.core.download.CustomStreamSource;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.download.NetworkDeniedImageDownloader;
 import com.nostra13.universalimageloader.core.download.SlowNetworkImageDownloader;
@@ -79,6 +80,8 @@ public final class ImageLoaderConfiguration {
 	final ImageDownloader networkDeniedDownloader;
 	final ImageDownloader slowNetworkDownloader;
 
+	final CustomStreamSource customStreamSource;
+	
 	private ImageLoaderConfiguration(final Builder builder) {
 		context = builder.context;
 		maxImageWidthForMemoryCache = builder.maxImageWidthForMemoryCache;
@@ -107,6 +110,8 @@ public final class ImageLoaderConfiguration {
 		slowNetworkDownloader = new SlowNetworkImageDownloader(downloader);
 
 		reserveDiscCache = DefaultConfigurationFactory.createReserveDiscCache(context);
+		
+		customStreamSource = builder.customStreamSource;
 	}
 
 	/**
@@ -187,6 +192,8 @@ public final class ImageLoaderConfiguration {
 
 		private boolean writeLogs = false;
 
+		private CustomStreamSource customStreamSource;
+		
 		public Builder(Context context) {
 			this.context = context.getApplicationContext();
 		}
@@ -518,6 +525,11 @@ public final class ImageLoaderConfiguration {
 			return this;
 		}
 
+		public Builder customStreamSource(CustomStreamSource source) {
+			this.customStreamSource = source;
+			return this;
+		}
+		
 		/** Builds configured {@link ImageLoaderConfiguration} object */
 		public ImageLoaderConfiguration build() {
 			initEmptyFieldsWithDefaultValues();
@@ -548,7 +560,7 @@ public final class ImageLoaderConfiguration {
 				memoryCache = new FuzzyKeyMemoryCache<String, Bitmap>(memoryCache, MemoryCacheUtil.createFuzzyKeyComparator());
 			}
 			if (downloader == null) {
-				downloader = DefaultConfigurationFactory.createImageDownloader(context);
+				downloader = DefaultConfigurationFactory.createImageDownloader(context, customStreamSource);
 			}
 			if (decoder == null) {
 				decoder = DefaultConfigurationFactory.createImageDecoder(writeLogs);

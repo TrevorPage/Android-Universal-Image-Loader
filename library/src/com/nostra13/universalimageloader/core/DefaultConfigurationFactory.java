@@ -18,6 +18,7 @@ package com.nostra13.universalimageloader.core;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+
 import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.cache.disc.impl.FileCountLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
@@ -34,6 +35,7 @@ import com.nostra13.universalimageloader.core.decode.ImageDecoder;
 import com.nostra13.universalimageloader.core.display.BitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import com.nostra13.universalimageloader.core.download.CustomStreamSource;
 import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
@@ -104,8 +106,8 @@ public class DefaultConfigurationFactory {
 	}
 
 	/** Creates default implementation of {@link ImageDownloader} - {@link BaseImageDownloader} */
-	public static ImageDownloader createImageDownloader(Context context) {
-		return new BaseImageDownloader(context);
+	public static ImageDownloader createImageDownloader(Context context, CustomStreamSource source) {
+		return new BaseImageDownloader(context, source);
 	}
 
 	/** Creates default implementation of {@link ImageDecoder} - {@link BaseImageDecoder} */

@@ -37,7 +37,7 @@ public class HttpClientImageDownloader extends BaseImageDownloader {
 	private HttpClient httpClient;
 
 	public HttpClientImageDownloader(Context context, HttpClient httpClient) {
-		super(context);
+		super(context, null);
 		this.httpClient = httpClient;
 	}
 
